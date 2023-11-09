@@ -1,0 +1,63 @@
+---
+title: "p8105_hw5_ncl2127"
+output: html_document
+date: "2023-11-06"
+---
+
+```{r}
+library(tidyverse)
+library(tidyr)
+library(dplyr)
+library(stringr)
+library(broom)
+```
+
+Problem 1
+
+```{r}
+hom_df <- read_csv("data/homicide-data.csv")
+```
+
+```{r}
+hom_df <- hom_df |>
+  mutate(city_state = str_c(city, ', ', state))
+ 
+
+open_hom <- hom_df |>
+  filter(disposition %in% c("Open/No arrest", "Closed without arrest")) |>
+    group_by(city_state) |>
+  summarize(num_unsolved = n())
+
+closed_hom <- hom_df |>
+  filter(disposition == "Closed by arrest")|>
+  group_by(city_state) |>
+  summarize(num_solved = n())
+```
+
+```{r}
+
+blt_md_open <- open_hom |> filter(city_state == "Baltimore, MD")
+
+blt_md_closed <- closed_hom |> filter(city_state == "Baltimore, MD")
+
+blt_md <- full_join(blt_md_open, blt_md_closed) |>
+mutate(total = blt_md$num_unsolved + blt_md$num_solved)
+
+baltimore <- prop.test(blt_md$num_unsolved, blt_md$total) |> tidy(baltimore) |> select(estimate, conf.low, conf.high) |> mutate(city_state = blt_md$city_state)
+
+```
+
+Problem 2
+
+```{r}
+data_list <- tibble(list.files(path = "C:/Users/ahsin/OneDrive/Desktop/p8105_hw5_ncl2127/data/hw5_data/data", full.names = FALSE, recursive = TRUE))
+```
+
+```{r}
+setwd("C:/Users/ahsin/OneDrive/Desktop/p8105_hw5_ncl2127/data/hw5_data/data")
+
+output = purrr::map_df(data_list, read_csv, .id = "input")|> 
+  janitor::clean_names()
+  
+
+```
