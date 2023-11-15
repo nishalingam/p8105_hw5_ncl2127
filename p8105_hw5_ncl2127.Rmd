@@ -50,14 +50,19 @@ baltimore <- prop.test(blt_md$num_unsolved, blt_md$total) |> tidy(baltimore) |> 
 Problem 2
 
 ```{r}
-data_list <- tibble(list.files(path = "C:/Users/ahsin/OneDrive/Desktop/p8105_hw5_ncl2127/data/hw5_data/data", full.names = FALSE, recursive = TRUE))
-```
+subject <- list.files(path = "C:/Users/ahsin/OneDrive/Desktop/p8105_hw5_ncl2127/data/hw5_data/data", full.names = FALSE, recursive = TRUE
+)
 
-```{r}
 setwd("C:/Users/ahsin/OneDrive/Desktop/p8105_hw5_ncl2127/data/hw5_data/data")
 
-output = purrr::map_df(data_list, read_csv, .id = "input")|> 
-  janitor::clean_names()
-  
+data_new <- tibble(subject) |>
+  mutate(data = map(subject, read_csv))|>
+  unnest() |>
+  pivot_longer(week_1:week_8, names_to = "week", values_to = "obs")
+
+spaghetti <- ggplot(data_new, aes(x = week, y = obs, group = subject, color = subject)) + geom_point() + geom_line()
+
+```
+```{r}
 
 ```
