@@ -64,11 +64,14 @@ data_new <- tibble(subject) |>
 spaghetti <- ggplot(data_new, aes(x = week, y = obs, group = subject, color = subject)) + geom_point() + geom_line()
 
 spaghetti
-
 ```
-Comments: 
+  
+  Spaghetti Plot Comments: 
 
-Problem 3
+The subjects from the experimental arm seem to have observation values that increase at a higher rate than those of the subjects from the control arm, as the plotted observations for exp_06, exp_07, exp_08, exp_09, exp_10 started at values close to many of the control arm subjects at increased at larger intervals and ending at values greater than 2.5 by week 8. In fact, by week 8, it seems that all of the control arm subjects' observations stayed at their starting values or decreased from their original values, all of which ended at less than 2.5 in week 8, while nearly all of the experimental arm subjects' observations were greater than 2.5 by week 8. 
+
+  
+  Problem 3
 
 ## P-value and Mean generation function (general)
 ```{r}
@@ -183,7 +186,8 @@ reject_plot <- ggplot(mu_props, aes(x = mu, y = prop)) +geom_bar(stat = "identit
 
 reject_plot
 ```
-The power of the test increases as mu increases, so as the effect size or difference between the null and alternative hypotheses increase, so does the proportion of times the null mean was rejected.
+  
+  The power of the test increases as mu increases, so as the effect size or difference between the null and alternative hypotheses increase, so does the proportion of times the null mean was rejected.
 
 ## Plot showing average estimate of mu hat
 ```{r}
@@ -230,4 +234,5 @@ mu_hat_avg_reject_plot <- ggplot(mu_hat_avgs_reject, aes(x = mu, y = mu_hat_avg_
 
 mu_hat_avg_reject_plot
 ```
-For the most part, it seems that the sample average of mu hat where the null is rejected is approximately equal to the true value of mu. There seems a bit of a discrepancy when mu = 1, but otherwise, the average mu hat matches the true mu. This makes sense because with all of the data sets that used [1, 6] as its true mu to sample with, the null hypothesis stating the true mu = 0, would be rejected. Since there were 5000 samples taken for each true mu between [1, 6], the average estimate or mu hat should be approximately close to the true mu.
+  
+  For the most part, it seems that the sample average of mu hat where the null is rejected is approximately equal to the true value of mu. There seems a bit of a discrepancy when mu = 1, but otherwise, the average mu hat matches the true mu. This makes sense because with all of the data sets that used [1, 6] as its true mu to sample with, the null hypothesis stating the true mu = 0, would be rejected. Since there were 5000 samples taken for each true mu between [1, 6], the average estimate or mu hat should be approximately close to the true mu.
