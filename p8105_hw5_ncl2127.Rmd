@@ -68,7 +68,7 @@ spaghetti
   
   Spaghetti Plot Comments: 
 
-The subjects from the experimental arm seem to have observation values that increase at a higher rate than those of the subjects from the control arm, as the plotted observations for exp_06, exp_07, exp_08, exp_09, exp_10 started at values close to many of the control arm subjects at increased at larger intervals and ending at values greater than 2.5 by week 8. In fact, by week 8, it seems that all of the control arm subjects' observations stayed at their starting values or decreased from their original values, all of which ended at less than 2.5 in week 8, while nearly all of the experimental arm subjects' observations were greater than 2.5 by week 8. 
+The subjects from the experimental arm seem to have observation values that increase at a higher rate than those of the subjects from the control arm, as the plotted observations for exp_06, exp_07, exp_08, exp_09, exp_10 started at values close to many of the control arm subjects at increased at larger intervals and ending at values greater than 2.5 by week 8. In fact, by week 8, it seems that all of the control arm subjects' observations stayed at their starting values or decreased from their original values, all of which ended at less than 2.5 in week 8, while all of the experimental arm subjects' observations were greater than 2.5 by week 8. 
 
   
   Problem 3
