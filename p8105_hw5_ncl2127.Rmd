@@ -1,6 +1,6 @@
 ---
 title: "p8105_hw5_ncl2127"
-output: html_document
+output: github_document
 date: "2023-11-06"
 ---
 
@@ -185,3 +185,49 @@ reject_plot
 ```
 The power of the test increases as mu increases, so as the effect size or difference between the null and alternative hypotheses increase, so does the proportion of times the null mean was rejected.
 
+## Plot showing average estimate of mu hat
+```{r}
+mu_hat_avg_finder = function(x) {
+  mu_hat = mean(x$estimate)
+}
+
+cases = list(sim_results_0, sim_results_1, sim_results_2, sim_results_3, sim_results_4, sim_results_5, sim_results_6)
+
+mu_hats = tibble(mu_hat_average = map(cases, mu_hat_avg_finder))
+
+mu_cases <- c(0, 1, 2, 3, 4, 5, 6)
+
+mu_hat_avgs <- bind_cols(mu_cases, mu_hats)|>
+  rename(mu = ...1)|>
+  mutate(mu = as.numeric(unlist(mu)))|>
+  mutate(mu_hat_average = as.numeric(unlist(mu_hat_average)))
+
+mu_hat_avg_plot <- ggplot(mu_hat_avgs, aes(x = mu, y = mu_hat_average)) +geom_point() + geom_line()
+
+mu_hat_avg_plot
+```
+
+## Second plot showing average estimate of mu hat in samples where null was rejected
+
+```{r}
+mu_hat_avg_reject_finder = function(x) {
+  x <- filter(x, x$p.value <= 0.05)
+  mu_hat = mean(x$estimate)
+}
+
+cases = list(sim_results_0, sim_results_1, sim_results_2, sim_results_3, sim_results_4, sim_results_5, sim_results_6)
+
+mu_hats_reject = tibble(mu_hat_avg_reject = map(cases, mu_hat_avg_reject_finder))
+
+mu_cases <- c(0, 1, 2, 3, 4, 5, 6)
+
+mu_hat_avgs_reject <- bind_cols(mu_cases, mu_hats_reject)|>
+  rename(mu = ...1)|>
+  mutate(mu = as.numeric(unlist(mu)))|>
+  mutate(mu_hat_avg_reject = as.numeric(unlist(mu_hat_avg_reject)))
+
+mu_hat_avg_reject_plot <- ggplot(mu_hat_avgs_reject, aes(x = mu, y = mu_hat_avg_reject)) +geom_point() + geom_line()
+
+mu_hat_avg_reject_plot
+```
+For the most part, it seems that the sample average of mu hat where the null is rejected is approximately equal to the true value of mu. There seems a bit of a discrepancy when mu = 1, but otherwise, the average mu hat matches the true mu. This makes sense because with all of the data sets that used [1, 6] as its true mu to sample with, the null hypothesis stating the true mu = 0, would be rejected. Since there were 5000 samples taken for each true mu between [1, 6], the average estimate or mu hat should be approximately close to the true mu.
