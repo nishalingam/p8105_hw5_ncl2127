@@ -9,6 +9,7 @@ library(tidyverse)
 library(tidyr)
 library(dplyr)
 library(stringr)
+library(ggplot2)
 library(broom)
 ```
 
@@ -40,10 +41,10 @@ blt_md_open <- open_hom |> filter(city_state == "Baltimore, MD")
 
 blt_md_closed <- closed_hom |> filter(city_state == "Baltimore, MD")
 
-blt_md <- full_join(blt_md_open, blt_md_closed) |>
-mutate(total = blt_md$num_unsolved + blt_md$num_solved)
-
-baltimore <- prop.test(blt_md$num_unsolved, blt_md$total) |> tidy(baltimore) |> select(estimate, conf.low, conf.high) |> mutate(city_state = blt_md$city_state)
+# blt_md <- full_join(blt_md_open, blt_md_closed) |>
+# mutate(total = blt_md$num_unsolved + blt_md$num_solved)
+# 
+# baltimore <- prop.test(blt_md$num_unsolved, blt_md$total) |> tidy(baltimore) |> select(estimate, conf.low, conf.high)
 
 ```
 
@@ -62,7 +63,125 @@ data_new <- tibble(subject) |>
 
 spaghetti <- ggplot(data_new, aes(x = week, y = obs, group = subject, color = subject)) + geom_point() + geom_line()
 
-```
-```{r}
+spaghetti
 
 ```
+Comments: 
+
+Problem 3
+
+## P-value and Mean generation function (general)
+```{r}
+alpha = 0.05
+
+sim_mu_hat_p = function(n, mu, sigma = 5) {
+  
+  sim_data = tibble(
+    x = rnorm(n = n, mean = mu, sd = sigma)
+  )
+  
+  t_test = t.test(sim_data, mean = mu, conf.level = 1 - 0.05)|>
+  broom::tidy()
+}
+```
+
+## Case: Mu = 0
+```{r}
+output_0 = vector("list", 5000)
+
+for(i in 1:5000) {
+  output_0[[i]] = sim_mu_hat_p(30, 0)
+}
+
+sim_results_0 = bind_rows(output_0)
+```
+
+## Case: Mu = 1
+```{r}
+output_1 = vector("list", 5000)
+
+for(i in 1:5000) {
+  output_1[[i]] = sim_mu_hat_p(30, 1)
+}
+
+sim_results_1 = bind_rows(output_1)
+```
+
+## Case: Mu = 2
+```{r}
+output_2 = vector("list", 5000)
+
+for(i in 1:5000) {
+  output_2[[i]] = sim_mu_hat_p(30, 2)
+}
+
+sim_results_2 = bind_rows(output_2)
+```
+
+## Case: Mu = 3
+```{r}
+output_3 = vector("list", 5000)
+
+for(i in 1:5000) {
+  output_3[[i]] = sim_mu_hat_p(30, 3)
+}
+
+sim_results_3 = bind_rows(output_3)
+```
+
+## Case: Mu = 4
+```{r}
+output_4 = vector("list", 5000)
+
+for(i in 1:5000) {
+  output_4[[i]] = sim_mu_hat_p(30, 4)
+}
+
+sim_results_4 = bind_rows(output_4)
+```
+
+## Case: Mu = 5
+```{r}
+output_5 = vector("list", 5000)
+
+for(i in 1:5000) {
+  output_5[[i]] = sim_mu_hat_p(30, 5)
+}
+
+sim_results_5 = bind_rows(output_5)
+```
+
+## Case: Mu = 6
+```{r}
+output_6 = vector("list", 5000)
+
+for(i in 1:5000) {
+  output_6[[i]] = sim_mu_hat_p(30, 6)
+}
+
+sim_results_6 = bind_rows(output_6)
+```
+
+## Plot showing proportion of times null rejected
+```{r}
+cases = list(sim_results_0, sim_results_1, sim_results_2, sim_results_3, sim_results_4, sim_results_5, sim_results_6)
+
+prop_finder = function(x) {
+  prop_reject = nrow(filter(x, x$p.value <= 0.05)) / nrow(x)
+}
+
+props = tibble(prop = map(cases, prop_finder))
+
+mu_cases <- c(0, 1, 2, 3, 4, 5, 6)
+
+mu_props <- bind_cols(mu_cases, props)|>
+  rename(mu = ...1)|>
+  mutate(mu = as.numeric(unlist(mu)))|>
+  mutate(prop = as.numeric(unlist(prop)))
+
+reject_plot <- ggplot(mu_props, aes(x = mu, y = prop)) +geom_bar(stat = "identity")
+
+reject_plot
+```
+The power of the test increases as mu increases, so as the effect size or difference between the null and alternative hypotheses increase, so does the proportion of times the null mean was rejected.
+
